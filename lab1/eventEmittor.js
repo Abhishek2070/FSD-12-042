@@ -1,35 +1,56 @@
-  import { EventEmitter } from "node:events";
-  const login = (name) => {
-    console.log(`${name} has logged in`);
-};
+// orderSystem.mjs
+import { EventEmitter } from "node:events";
 
-login("abhi dubey");
+class OrderSystem extends EventEmitter {
+  placeOrder(order) {
+    console.log(`\n📦 Order received: #${order.id} for ${order.customerName}`);
 
-const start = () => {
-    console .log("system starts");
+    // Simulate saving to database
+    console.log("Saving order to database...");
 
-};
-const working = (name) =>{
-    console.log(`${name} add items to cart`);
+    // Emit event — everything below reacts independently
+    this.emit("orderPlaced", order);
+  }
+}
 
+const orderSystem = new OrderSystem();
 
-};
-const checkout = (name) => {
-    console.log(`${name} has logged out`);
-};
+// --- Listener 1: Email service ---
+orderSystem.on("orderPlaced", (order) => {
+  console.log(`📧 Sending confirmation email to ${order.email}...`);
+});
 
-const task = new EventEmitter();
-task.once("greet", start);
-task.on("greet",login);
-task.on("greet", working);
-task.on("greet", checkout);
-task.once("exit",()=>{
-    console.log("system shutting down");
+// --- Listener 2: Inventory service ---
+orderSystem.on("orderPlaced", (order) => {
+  order.items.forEach((item) => {
+    console.log(`📉 Reducing stock for "${item.name}" by ${item.qty}`);
+  });
+});
 
-})
-task.emit("greet", "abhishek Dubey");
-task.emit("greet"," abhi dubey");
-task.off("greet",working);
-task.emit("greet", "abhay");
-task.emit("exit");
-// nameless function ()=> {}
+// --- Listener 3: Shipping service ---
+orderSystem.on("orderPlaced", (order) => {
+  console.log(`🚚 Creating shipping label for order #${order.id}`);
+});
+
+// --- Listener 4: Analytics/logging ---
+orderSystem.on("orderPlaced", (order) => {
+  console.log(`📊 Logging order #${order.id} — total: ₹${order.total}`);
+});
+
+// --- Error handling ---
+orderSystem.on("error", (err) => {
+  console.error("❌ Order system error:", err.message);
+});
+
+// --- Simulate placing an order ---
+orderSystem.placeOrder({
+  id: "ORD1001",
+  customerName: "Dhanesh Kumar",
+  email: "dhanesh@example.com",
+  items: [
+    { name: "Wireless Mouse", qty: 1 },
+    { name: "Mechanical Keyboard", qty: 1 },
+    {name: "wireless headset", qty: 1}
+  ],
+  total: 52499,
+});
