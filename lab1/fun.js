@@ -29,3 +29,10 @@ function digitToWord(digit) {
     }
 }
 console.log(digitToWord(5));
+
+
+// front end - react flask vuejs angular
+// back end - 
+// css+(bootstrap(used in frontend design)
+// tailwindcss(used in frontend design)
+backend - nodejs,  php, fast AudioParam, springboot(java), django(python), 
