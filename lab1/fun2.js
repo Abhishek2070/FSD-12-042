@@ -13,6 +13,8 @@ function main() {
   setTimeout(f1, 0);
 
   setImmediate(f2);
+
+Process.nextTick 
   f3();
   console.log("end");
 }
